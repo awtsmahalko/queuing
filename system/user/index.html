@@ -33,34 +33,58 @@
       if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
       return i;
     }
-    </script>
   </script>
 </head>
 <body onload="startTime()">
-
-<div class="jumbotron text-center">
-  <h2 id="date-txt"></h2>
-  <h1 id="time-txt"></h1>
-</div>
-  
-<div class="container">
-  <div class="row">
-    <div class="col-sm-6">
-      <div class="card jumbotron  text-center">
-        <div class="card-img-overlay">
-          <h1 class="card-title">REGULAR</h1>
+  <div class="container">
+    <div class="row text-center" style="margin-top: 5%;">
+      <h2 id="date-txt"></h2>
+      <h1 id="time-txt"></h1>
+    </div>
+    <div class="row" style="margin-top: 10%;">
+      <div class="col-sm-6">
+        <div onclick="printMe('R')" class="card jumbotron text-center" style="background-color: #5555e4;cursor: pointer;">
+          <div class="card-img-overlay">
+            <h1 class="card-title" style="font-weight: bold;color: white;">REGULAR</h1>
+          </div>
         </div>
-      </div>
-    </div> 
-    <div class="col-sm-6">
-      <div class="card jumbotron text-center">
-        <div class="card-img-overlay">
-          <h1 class="card-title">PRIORITY</h1>
+      </div> 
+      <div class="col-sm-6">
+        <div onclick="printMe('P')" class="card jumbotron text-center" style="background-color: #5555e4;cursor: pointer;">
+          <div class="card-img-overlay">
+            <h1 class="card-title" style="font-weight: bold;color: white;">PRIORITY</h1>
+          </div>
         </div>
-      </div>
-    </div> 
+      </div> 
+    </div>
   </div>
-</div>
-
 </body>
+<script type="text/javascript">
+  function printMe(type){
+    $.post("ajax/que_new_customer.php",{
+      type:type
+    },function(data,status){
+      alert(data);
+    });
+    // Popup(type,type);
+  }
+  function Popup(data,data_header) {
+    var myWindow = window.open('', 'Print Payroll', 'height=600,width=1000');
+    myWindow.document.write('<html><head><title>Print Payroll</title>');
+    /*optional stylesheet*/ //myWindow.document.write('<link rel="stylesheet" href="main.css" type="text/css" />');
+    myWindow.document.write('</head><body >');
+    myWindow.document.write('<div style="font-size:12pt; font-weight:bold; width: 250px;" align="center"><span style="font-size:11px;">CENTRAL NEGROS ELECTRIC COOPERATIVE</span><br><span style="font-size:11px;">Mabibi St. Bacolod City</span><br><br><span style="font-size:30px;">REGULAR</span><br><span style="font-size: 60px;">1000</span><br><br><span style="font-size: 20px;">January 22, 2020</span></div>')
+    myWindow.document.write('</body></html>');
+    myWindow.document.close(); // necessary for IE >= 10
+
+      // myWindow.focus(); // necessary for IE >= 10
+      // myWindow.print();
+      // myWindow.close();
+    // myWindow.onload=function(){
+    //   myWindow.focus(); // necessary for IE >= 10
+    //   myWindow.print();
+    //   myWindow.close();
+    // };
+  }
+</script>
 </html>
