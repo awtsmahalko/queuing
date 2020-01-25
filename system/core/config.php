@@ -18,7 +18,8 @@ error_reporting(0);
 	define ("VALUE",serialize (array ("my_functions.php")));
 	date_default_timezone_set("Asia/Manila");
 	$today = date('H:i:s');
-	$date = date('Y-m-d H:i:s');
+	$date_time = date('Y-m-d H:i:s');
+	$date = date('Y-m-d');
 
 // START THE SESSION
 	session_start();

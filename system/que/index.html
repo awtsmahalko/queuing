@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Bootstrap Example</title>
+  <title>CENECO QUEUING</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+  <script src="../../assets/js/jquery.min.js"></script>
+  <script src="../../assets/js/bootstrap.min.js"></script>
   <script type="text/javascript">
     function startTime() {
       var today = new Date();
@@ -36,11 +36,11 @@
   </script>
 </head>
 <body onload="startTime()">
+  <div class="jumbotron text-center">
+    <h1>CENECO QUEUING SYSTEM</h1>
+    <p><span id="date-txt"></span> <span id="time-txt"></span></p> 
+  </div>
   <div class="container">
-    <div class="row text-center" style="margin-top: 5%;">
-      <h2 id="date-txt"></h2>
-      <h1 id="time-txt"></h1>
-    </div>
     <div class="row" style="margin-top: 10%;">
       <div class="col-sm-6">
         <div onclick="printMe('R')" class="card jumbotron text-center" style="background-color: #5555e4;cursor: pointer;">
@@ -64,16 +64,17 @@
     $.post("ajax/que_new_customer.php",{
       type:type
     },function(data,status){
-      alert(data);
+      var o = JSON.parse(data);
+      Popup(o.type_name,o.que_no,o.date_time);
     });
     // Popup(type,type);
   }
-  function Popup(data,data_header) {
-    var myWindow = window.open('', 'Print Payroll', 'height=600,width=1000');
-    myWindow.document.write('<html><head><title>Print Payroll</title>');
+  function Popup(type_name,que_no,date_time) {
+    var myWindow = window.open('', 'Print Queuing', 'height=600,width=1000');
+    myWindow.document.write('<html><head><title>Print Queuing</title>');
     /*optional stylesheet*/ //myWindow.document.write('<link rel="stylesheet" href="main.css" type="text/css" />');
     myWindow.document.write('</head><body >');
-    myWindow.document.write('<div style="font-size:12pt; font-weight:bold; width: 250px;" align="center"><span style="font-size:11px;">CENTRAL NEGROS ELECTRIC COOPERATIVE</span><br><span style="font-size:11px;">Mabibi St. Bacolod City</span><br><br><span style="font-size:30px;">REGULAR</span><br><span style="font-size: 60px;">1000</span><br><br><span style="font-size: 20px;">January 22, 2020</span></div>')
+    myWindow.document.write('<div style="font-size:12pt; font-weight:bold; width: 250px;" align="center"><span style="font-size:11px;">CENTRAL NEGROS ELECTRIC COOPERATIVE</span><br><span style="font-size:11px;">Mabibi St. Bacolod City</span><br><br><span style="font-size:30px;">'+type_name+'</span><br><span style="font-size: 60px;">'+que_no+'</span><br><br><span style="font-size: 20px;">'+date_time+'</span></div>')
     myWindow.document.write('</body></html>');
     myWindow.document.close(); // necessary for IE >= 10
 
