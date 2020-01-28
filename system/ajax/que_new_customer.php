@@ -1,5 +1,5 @@
 <?php
-include '../../core/config.php';
+include '../core/config.php';
 $type = $_POST['type'];
 
 $type_name = ($type=='R')?"REGULAR":"PRIORITY";
