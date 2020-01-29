@@ -1,6 +1,6 @@
 <?php
 include '../core/config.php';
-$teller_id = 1;
+$teller_id = $_REQUEST['q'];
 $curr_data = FM_SELECT_QUERY("que_no,que_type","tbl_que_board","date = '$date' AND teller_id = '$teller_id' AND status = 0");
 if($curr_data[0]>0){
   $my_que = $curr_data[1]."-".sprintf("%04d",$curr_data[0]);
@@ -61,10 +61,6 @@ if($curr_data[0]>0){
           <div class="panel-body text-center">
             <span style="font-size: 200px" id='counter-que'><?=$my_que?></span>
           </div>
-          <div class="panel-footer text-center">
-            <button type="button" class="btn btn-lg btn-danger"> RECALL QUE ( R )</button>
-            <button type="button" class="btn btn-lg btn-primary" onclick='next_que()'> <span class="fa fa-arrow-right"></span> NEXT QUE ( N )</button>
-          </div>
         </div>
       </div>
       <div class="col-md-4">
@@ -80,29 +76,20 @@ if($curr_data[0]>0){
   </div>
 </body>
 <script type="text/javascript">
-  function next_que(){
-    $.post("../ajax/teller_finish_que.php",{
+  var teller_id = <?=$teller_id?>;
+  function fetch_current_monitor(){
+    $.post("../ajax/monitor_get_current_que_board.php",{
+      teller_id : teller_id
     },function(data,status){
-      get_waiting_list();
       $("#counter-que").html(data);
-      if(data == -1){
-        $("#counter-que").html("------");
-        alert("No que found");
-      }
     });
   }
   function get_waiting_list(){
+    fetch_current_monitor();
     $.post("../ajax/teller_get_waiting.php",{
     },function(data,status){
       $("#waiting-list").html(data);
     });
-  }
-  function key_press_event(event) {
-    var key_press = event.which || event.keyCode;
-    if(key_press == 78 || key_press == 110){
-      next_que();
-    }
-    // alert("The Unicode value is: " + x);
   }
 </script>
 </html>

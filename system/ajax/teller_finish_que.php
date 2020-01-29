@@ -1,7 +1,7 @@
 <?php
 include '../core/config.php';
 
-$teller_id = 1;
+$teller_id = $_REQUEST['teller_id'];
 
 // FETCH CURRENT QUE DATA
 

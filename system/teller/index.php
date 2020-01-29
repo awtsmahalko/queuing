@@ -1,6 +1,6 @@
 <?php
 include '../core/config.php';
-$teller_id = 1;
+$teller_id = $_REQUEST['q'];
 $curr_data = FM_SELECT_QUERY("que_no,que_type","tbl_que_board","date = '$date' AND teller_id = '$teller_id' AND status = 0");
 if($curr_data[0]>0){
   $my_que = $curr_data[1]."-".sprintf("%04d",$curr_data[0]);
@@ -80,8 +80,10 @@ if($curr_data[0]>0){
   </div>
 </body>
 <script type="text/javascript">
+var teller_id = <?=$teller_id?>;
   function next_que(){
     $.post("../ajax/teller_finish_que.php",{
+      teller_id:teller_id
     },function(data,status){
       get_waiting_list();
       $("#counter-que").html(data);
