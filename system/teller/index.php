@@ -1,11 +1,19 @@
 <?php
 include '../core/config.php';
 $teller_id = $_REQUEST['q'];
-$curr_data = FM_SELECT_QUERY("que_no,que_type","tbl_que_board","date = '$date' AND teller_id = '$teller_id' AND status = 0");
-if($curr_data[0]>0){
-  $my_que = $curr_data[1]."-".sprintf("%04d",$curr_data[0]);
+if(isset($teller_id)){
+  $body_text = "onkeypress='key_press_event(event)'";
+  $teller_data = FM_SELECT_QUERY("teller_name","tbl_teller","teller_id = '$teller_id'");
+  $teller_name = $teller_data[0];
+
+  $curr_data = FM_SELECT_QUERY("que_no,que_type","tbl_que_board","date = '$date' AND teller_id = '$teller_id' AND status = 0");
+  if($curr_data[0]>0){
+    $my_que = $curr_data[1]."-".sprintf("%04d",$curr_data[0]);
+  }else{
+    $my_que = "------";
+  }
 }else{
-  $my_que = "------";
+  $body_text = "";
 }
 ?>
 <!DOCTYPE html>
@@ -19,7 +27,7 @@ if($curr_data[0]>0){
   <script src="../../assets/js/bootstrap.min.js"></script>
   <script type="text/javascript">
     function startTime() {
-      get_waiting_list();
+    <?php if(isset($teller_id)){ ?>get_waiting_list(); <?php } ?>
       var today = new Date();
 
       var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -46,37 +54,53 @@ if($curr_data[0]>0){
     }
   </script>
 </head>
-<body onload="startTime()" onkeypress="key_press_event(event)">
-  <div class="well text-center">
+<body onload='startTime()' <?=$body_text?> >
+  <div class="well text-center" style='background-color:#049408;color:#fff;'>
     <h1>CENECO QUEUING SYSTEM</h1>
     <h3><span id="date-txt"></span> <span id="time-txt"></span></h3> 
   </div>
   <div class="container" style="padding: unset;">
-    <div class="row">
-      <div class="col-md-8">
-        <div class="panel panel-default">
-          <div class="panel-heading text-center">
-            <h1>Teller 1</h1>
+    <?php if(isset($teller_id)){?>
+      <div class="row">
+        <div class="col-md-8">
+          <div class="panel panel-default" style='border-color:#049408;'>
+            <div class="panel-heading text-center"  style='background-color:#049408;color:#fff;'>
+              <h1><?=$teller_name?></h1>
+            </div>
+            <div class="panel-body text-center">
+              <span style="font-size: 200px;color:#049408;" id='counter-que'><?=$my_que?></span>
+            </div>
+            <div class="panel-footer text-center">
+              <button type="button" class="btn btn-lg btn-danger"> RECALL QUE ( R )</button>
+              <button type="button" class="btn btn-lg btn-primary" onclick='next_que()'> <span class="fa fa-arrow-right"></span> NEXT QUE ( N )</button>
+            </div>
           </div>
-          <div class="panel-body text-center">
-            <span style="font-size: 200px" id='counter-que'><?=$my_que?></span>
-          </div>
-          <div class="panel-footer text-center">
-            <button type="button" class="btn btn-lg btn-danger"> RECALL QUE ( R )</button>
-            <button type="button" class="btn btn-lg btn-primary" onclick='next_que()'> <span class="fa fa-arrow-right"></span> NEXT QUE ( N )</button>
+        </div>
+        <div class="col-md-4">
+          <div class="panel panel-default" style='border-color:#049408;'>
+            <div class="panel-heading" style='background-color:#049408;color:#fff;'>Waiting list.... </div>
+            <div class="panel-body">
+              <ul class="list-group" id='waiting-list' style='max-height:300px;overflow:auto;color:#049408;'>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="panel panel-default">
-          <div class="panel-heading">Waiting list.... </div>
-          <div class="panel-body">
-            <ul class="list-group" id='waiting-list' style='max-height:300px;overflow:auto;'>
-            </ul>
+    <?php }else{
+      $teller_id = 0;
+      $loop_teller = FM_SELECT_LOOP_QUERY("*","tbl_teller","teller_status = 1");
+      if(count($loop_teller)>0){
+        foreach($loop_teller as $row){
+          echo '<div class="col-sm-6">
+          <div class="card jumbotron text-center" style="cursor: pointer;" onclick="linkMe('.$row[0].')">
+            <div class="card-img-overlay">
+              <h1 class="card-title" style="font-weight: bold;">'.$row['teller_name'].'</h1>
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
+        </div>';
+        }
+      }
+    } ?>
   </div>
 </body>
 <script type="text/javascript">
@@ -105,6 +129,9 @@ var teller_id = <?=$teller_id?>;
       next_que();
     }
     // alert("The Unicode value is: " + x);
+  }
+  function linkMe(q){
+    window.location = "index.php?q="+q;
   }
 </script>
 </html>
