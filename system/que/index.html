@@ -74,18 +74,21 @@
     myWindow.document.write('<html><head><title>Print Queuing</title>');
     /*optional stylesheet*/ //myWindow.document.write('<link rel="stylesheet" href="main.css" type="text/css" />');
     myWindow.document.write('</head><body >');
-    myWindow.document.write('<div style="font-size:12pt; font-weight:bold; width: 250px;" align="center"><span style="font-size:11px;">CENTRAL NEGROS ELECTRIC COOPERATIVE</span><br><span style="font-size:11px;">Mabibi St. Bacolod City</span><br><br><span style="font-size:30px;">'+type_name+'</span><br><span style="font-size: 60px;">'+que_no+'</span><br><br><span style="font-size: 20px;">'+date_time+'</span></div>')
+    myWindow.document.write('<div style="font-size:12pt; font-weight:bold; width: 250px;"><span style="font-size:11px;">C  E  N  E  C  O</span><br><span style="font-size:11px;">Mabibi St. Bacolod City</span><br><br><span style="font-size:30px;">'+type_name+'</span><br><span style="font-size: 60px;">'+que_no+'</span><br><br><span style="font-size: 12px;">'+date_time+'</span></div>')
     myWindow.document.write('</body></html>');
     myWindow.document.close(); // necessary for IE >= 10
 
-      // myWindow.focus(); // necessary for IE >= 10
-      // myWindow.print();
-      myWindow.close();
-    // myWindow.onload=function(){
-    //   myWindow.focus(); // necessary for IE >= 10
-    //   myWindow.print();
-    //   myWindow.close();
-    // };
+     // myWindow.focus(); // necessary for IE >= 10
+      myWindow.print();
+    myWindow.close();
+   // myWindow.onload = function () { 
+    // setTimeout(function () { myWindow.close(); }, 500); 
+  // }
+     // myWindow.onload=function(){
+     //  myWindow.focus(); // necessary for IE >= 10
+      //  myWindow.print();
+      // myWindow.close();
+   //  };
   }
 </script>
 </html>
