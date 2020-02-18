@@ -41,7 +41,7 @@ include '../core/config.php';
 </head>
 <body onload="startTime()" onkeypress="key_press_event(event)">
   <div class="well text-center" style='background-color:#049408;color:#fff;'>
-    <h1>CENECO QUEUING SYSTEM</h1>
+    <h1>MULTI TRANSACTION QUEUING SYSTEM</h1>
     <h3><span id="date-txt"></span> <span id="time-txt"></span></h3> 
   </div>
   <div class="container" style="padding: unset;">
@@ -87,6 +87,18 @@ include '../core/config.php';
     },function(data,status){
       $("#waiting-list").html(data);
     });
+  }
+
+  function readOutLoud(message) {
+    var speech = new SpeechSynthesisUtterance();
+
+    // Set the text and voice attributes.
+    speech.text = message;
+    speech.volume = 1;
+    speech.rate = 1;
+    speech.pitch = 1;
+    
+    window.speechSynthesis.speak(speech);
   }
 </script>
 </html>
