@@ -41,8 +41,8 @@ include '../core/config.php';
 </head>
 <body onload="startTime()" onkeypress="key_press_event(event)">
   <div class="well text-center" style='background-color:#049408;color:#fff;'>
-    <h1>MULTI TRANSACTION QUEUING SYSTEM</h1>
-    <h3><span id="date-txt"></span> <span id="time-txt"></span></h3> 
+    <h1 style="margin: auto;">MULTI TRANSACTION QUEUING SYSTEM</h1>
+    <h3 style="margin: auto;"><span id="date-txt"></span> <span id="time-txt"></span></h3> 
   </div>
   <div class="container" style="padding: unset;">
     <div class="row">
@@ -78,7 +78,11 @@ include '../core/config.php';
   function fetch_current_monitor(){
     $.post("../ajax/monitor_get_current_que_board.php",{
     },function(data,status){
-      $("#counter-que").html(data);
+      var o = JSON.parse(data);
+      $("#counter-que").html(o.tr);
+      if(o.message != ''){
+        readOutLoud(o.message);
+      }
     });
   }
   function get_waiting_list(){
@@ -90,6 +94,7 @@ include '../core/config.php';
   }
 
   function readOutLoud(message) {
+    console.log(message);
     var speech = new SpeechSynthesisUtterance();
 
     // Set the text and voice attributes.

@@ -71,7 +71,7 @@ if(isset($teller_id)){
               <span style="font-size: 200px;color:#049408;" id='counter-que'><?=$my_que?></span>
             </div>
             <div class="panel-footer text-center">
-              <button type="button" class="btn btn-lg btn-danger"> RECALL QUE ( R )</button>
+              <button type="button" class="btn btn-lg btn-danger" onclick="recallQue()"> RECALL QUE ( R )</button>
               <button type="button" class="btn btn-lg btn-primary" onclick='next_que()'> <span class="fa fa-arrow-right"></span> NEXT QUE ( N )</button>
             </div>
           </div>
@@ -128,10 +128,19 @@ var teller_id = <?=$teller_id?>;
     if(key_press == 78 || key_press == 110){
       next_que();
     }
-    // alert("The Unicode value is: " + x);
+    if(key_press == 82 || key_press == 114){
+      recallQue();
+    }
+   //  alert("The Unicode value is: " + key_press);
   }
   function linkMe(q){
     window.location = "index.php?q="+q;
+  }
+  function recallQue(){
+    $.post("../ajax/teller_recall_que.php",{
+      teller_id:teller_id
+    },function(data,status){
+    });
   }
 </script>
 </html>
