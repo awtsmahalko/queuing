@@ -7,6 +7,7 @@ foreach($loop_teller as $row){
 	if($que[0] > 0){
 		$que_no = sprintf("%04d", $que[que_no]);
 		$color = ($que[que_type] == 'R')?"#049408;":"red;";
+		$pr = ($que[que_type] == 'R')?"REGULAR":"PRIORITY";
 		$td_text = "<span style='font-size:30px !important;'>$pr</span><br><span>".$que_no."</span>";
 	}else{
 		$color = "#049408;";
