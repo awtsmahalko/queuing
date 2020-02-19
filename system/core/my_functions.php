@@ -115,4 +115,8 @@
 	        }
 	        return mysql_real_escape_string($str);
 	}
+
+	function changeBellStatus($board_id,$bell_status){
+		FM_QUERY("UPDATE tbl_que_board SET bell_status = $bell_status WHERE board_id = '$board_id'");
+	}
 ?>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>MULTI TRANSACTION QUEUING</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+    function startTime() {
+      var today = new Date();
+
+      var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+      var month_ = months[today.getMonth()];
+      var date_ = today.getDate();
+      var year_ = today.getFullYear();
+
+      var h = today.getHours();
+      var m = today.getMinutes();
+      var s = today.getSeconds();
+      m = checkTime(m);
+      s = checkTime(s);
+
+      var hour_ = h - (h >= 12 ? 12 : 0);
+      var period = h >= 12 ? 'PM' : 'AM';
+      document.getElementById('date-txt').innerHTML = month_ + " " + date_ + ", " +year_;
+      document.getElementById('time-txt').innerHTML = hour_ + ":" + m + " " +period;
+      var t = setTimeout(startTime, 500);
+    }
+    function checkTime(i) {
+      if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+      return i;
+    }
+  </script>
+</head>
+<body onload="startTime()">
+  <div class="well text-center" style='background-color:#049408;color:#fff;'>
+    <h3 style="margin: auto;">MULTI TRANSACTION QUEUING SYSTEM</h3>
+    <h4 style="margin: auto;"><span id="date-txt"></span> <span id="time-txt"></span></h4> 
+  </div>
+  <div class="container" style="padding: unset;width:100%;">
+    <button class="btn"><span class="fa fa-home"></span> Home</button>
+    <button class="btn"><span class="fa fa-home"></span> Home</button>
+    <button class="btn"><span class="fa fa-home"></span> Home</button>
+    <button class="btn"><span class="fa fa-home"></span> Home</button>
+  </div>
+</body>
+</html>
