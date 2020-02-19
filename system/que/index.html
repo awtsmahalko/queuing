@@ -37,11 +37,37 @@
 </head>
 <body onload="startTime()">
   <div class="well text-center" style='background-color:#049408;color:#fff;'>
-    <h1>MULTI TRANSACTION QUEUING SYSTEM</h1>
-    <h3><span id="date-txt"></span> <span id="time-txt"></span></h3> 
+    <h1 style="margin: unset;">MULTI TRANSACTION QUEUING SYSTEM</h1>
+    <h3 style="margin: unset;"><span id="date-txt"></span> <span id="time-txt"></span></h3> 
   </div>
-  <div class="container" style="margin: unset;">
-    <div class="col-md-12" style="margin-top: 10%;">
+  <div id="kind-content" class="container" style="margin: unset;width: 100%;">
+    <div class="col-md-12" style="margin-top: 5%;">
+      <div class="col-sm-4">
+        <div onclick="myKind(0)" class="card jumbotron text-center" style="background-color: #049408;cursor: pointer;">
+          <div class="card-img-overlay">
+            <h2 class="card-title" style="font-weight: bold;color: white;">BILLS PAYMENT</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div onclick="myKind(1)" class="card jumbotron text-center" style="background-color: #049408;cursor: pointer;">
+          <div class="card-img-overlay">
+            <h2 class="card-title" style="font-weight: bold;color: white;">NEW APPLICATION</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div onclick="myKind(2)" class="card jumbotron text-center" style="background-color: #049408;cursor: pointer;">
+          <div class="card-img-overlay">
+            <h2 class="card-title" style="font-weight: bold;color: white;">OTHER TRANSACTIONS</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="type-content" class="container" style="margin: unset;width: 100%;display: none;">
+    <div class="col-md-12" style="margin-top: 5%;">
+      <center><h1 id="kind-name"></h1></center>
       <div class="col-sm-6">
         <div onclick="printMe('R')" class="card jumbotron text-center" style="background-color: #049408;cursor: pointer;">
           <div class="card-img-overlay">
@@ -60,21 +86,31 @@
   </div>
 </body>
 <script type="text/javascript">
+  var my_kind = ["Bills Payment","New Application","Other Transactions"];
+  var my_type = {"R":'<span style="font-size:30px;">PRIORITY</span>',"P":'<span style="font-size:15px;">PWD/SENIOR CITIZEN<br>/PREGNANT</span>'};
   function printMe(type){
+    $("#kind-content").show();
+    $("#type-content").hide('fade');
     $.post("../ajax/que_new_customer.php",{
       type:type
     },function(data,status){
       var o = JSON.parse(data);
-      Popup(o.type_name,o.que_no,o.date_time);
+      Popup(type,o.que_no,o.date_time);
     });
     // Popup(type,type);
+  }
+
+  function myKind(kind){
+    $("#kind-content").hide('fade');
+    $("#kind-name").html(my_kind[kind]);
+    $("#type-content").show();
   }
   function Popup(type_name,que_no,date_time) {
     var myWindow = window.open('', 'Print Queuing', 'height=300,width=300');
     myWindow.document.write('<html><head><title>Print Queuing</title>');
     /*optional stylesheet*/ //myWindow.document.write('<link rel="stylesheet" href="main.css" type="text/css" />');
     myWindow.document.write('</head><body >');
-    myWindow.document.write('<div style="font-size:12pt; font-weight:bold; width: 250px;"><span style="font-size:11px;">C  E  N  E  C  O</span><br><span style="font-size:11px;">Mabibi St. Bacolod City</span><br><br><span style="font-size:30px;">'+type_name+'</span><br><span style="font-size: 60px;">'+que_no+'</span><br><br><span style="font-size: 12px;">'+date_time+'</span></div>')
+    myWindow.document.write('<div style="font-size:12pt; font-weight:bold; width: 250px;"><span style="font-size:11px;">QUEUING SYSTEM</span><br><span style="font-size:11px;">Bacolod City</span><br><br>'+my_type[type_name]+'<br><span style="font-size: 60px;">'+que_no+'</span><br><br><span style="font-size: 12px;">'+date_time+'</span></div>')
     myWindow.document.write('</body></html>');
     myWindow.document.close(); // necessary for IE >= 10
 

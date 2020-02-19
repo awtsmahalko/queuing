@@ -2,7 +2,7 @@
 include '../core/config.php';
 
 $teller_id = $_REQUEST['teller_id'];
-
+$array_type = array('P' => 'PWD/SENIOR CITIZEN/PREGNANT','R' => 'REGULAR');
 // FETCH CURRENT QUE DATA
 
 $que_data = FM_SELECT_QUERY("board_id,que_id","tbl_que_board","date = '$date' AND teller_id = '$teller_id' AND status = 0");
@@ -27,7 +27,7 @@ if($fetch_latest_que[0] > 0){
     );
     FM_INSERT_QUERY("tbl_que_board",$form_insert_board);
     FM_UPDATE_QUERY("tbl_que",array('que_status'=>2),"que_id = '$fetch_latest_que[0]'");
-    echo $fetch_latest_que['que_type'] . "-".sprintf("%04d", $fetch_latest_que[que_no]);
+    echo "<h1 style='margin:auto;'>".$array_type[$fetch_latest_que['que_type']]."</h1><span style='font-size:200px'>".sprintf("%04d",$fetch_latest_que[que_no])."</span><h2 style='margin:auto;'>(Other Transactions)</h2>";
 }else{
     echo -1;
 }

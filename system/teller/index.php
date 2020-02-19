@@ -2,15 +2,16 @@
 include '../core/config.php';
 $teller_id = $_REQUEST['q'];
 if(isset($teller_id)){
+  $array_type = array('P' => 'PWD/SENIOR CITIZEN/PREGNANT','R' => 'REGULAR');
   $body_text = "onkeypress='key_press_event(event)'";
   $teller_data = FM_SELECT_QUERY("teller_name","tbl_teller","teller_id = '$teller_id'");
   $teller_name = $teller_data[0];
 
   $curr_data = FM_SELECT_QUERY("que_no,que_type","tbl_que_board","date = '$date' AND teller_id = '$teller_id' AND status = 0");
   if($curr_data[0]>0){
-    $my_que = $curr_data[1]."-".sprintf("%04d",$curr_data[0]);
+    $my_que = "<h1 style='margin:auto;'>".$array_type[$curr_data['que_type']]."</h1><span style='font-size:200px'>".sprintf("%04d",$curr_data[0])."</span><h2 style='margin:auto;'>(Other Transactions)</h2>";
   }else{
-    $my_que = "------";
+    $my_que = "<span style='font-size:200px'>------</span>";
   }
 }else{
   $body_text = "";
@@ -56,8 +57,8 @@ if(isset($teller_id)){
 </head>
 <body onload='startTime()' <?=$body_text?> >
   <div class="well text-center" style='background-color:#049408;color:#fff;'>
-    <h1>CENECO QUEUING SYSTEM</h1>
-    <h3><span id="date-txt"></span> <span id="time-txt"></span></h3> 
+    <h1 style='margin:auto;'>MULTI TRANSACTIONS QUEUING SYSTEM</h1>
+    <h3 style='margin:auto;'><span id="date-txt"></span> <span id="time-txt"></span></h3> 
   </div>
   <div class="container" style="padding: unset;">
     <?php if(isset($teller_id)){?>
@@ -65,10 +66,10 @@ if(isset($teller_id)){
         <div class="col-md-8">
           <div class="panel panel-default" style='border-color:#049408;'>
             <div class="panel-heading text-center"  style='background-color:#049408;color:#fff;'>
-              <h1><?=$teller_name?></h1>
+              <h1 style='margin:auto;'><?=$teller_name?></h1>
             </div>
-            <div class="panel-body text-center">
-              <span style="font-size: 200px;color:#049408;" id='counter-que'><?=$my_que?></span>
+            <div class="panel-body text-center" style='min-height: 215px;overflow: auto;'>
+              <span style="color:#049408;" id='counter-que'><?=$my_que?></span>
             </div>
             <div class="panel-footer text-center">
               <button type="button" class="btn btn-lg btn-danger" onclick="recallQue()"> RECALL QUE ( R )</button>
@@ -80,7 +81,7 @@ if(isset($teller_id)){
           <div class="panel panel-default" style='border-color:#049408;'>
             <div class="panel-heading" style='background-color:#049408;color:#fff;'>Waiting list.... </div>
             <div class="panel-body">
-              <ul class="list-group" id='waiting-list' style='max-height:300px;overflow:auto;color:#049408;'>
+              <ul class="list-group" id='waiting-list' style='min-height:350px;max-height:350px;overflow:auto;color:#049408;'>
               </ul>
             </div>
           </div>
@@ -112,7 +113,7 @@ var teller_id = <?=$teller_id?>;
       get_waiting_list();
       $("#counter-que").html(data);
       if(data == -1){
-        $("#counter-que").html("------");
+        $("#counter-que").html("<span style='font-size:200px'>------</span>");
         alert("No que found");
       }
     });
