@@ -3,10 +3,10 @@ error_reporting(0);
 // GLOBALS DATABASE CONFIG AND OTHERS
 	$GLOBALS['config'] = array(
 		'mysql' => array(
-			'host'         => 'localhost',
-			'username'     => 'root',
-			'password'     => '',
-			'database'	   => 'ceneco_db'
+			'host'         => 'mysql.hostinger.com',
+			'username'     => 'u764488932_que',
+			'password'     => 'que12345',
+			'database'	   => 'u764488932_que'
 		),
 
 		'footer' => array(
