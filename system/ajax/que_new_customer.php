@@ -1,7 +1,7 @@
 <?php
 include '../core/config.php';
 $type = $_POST['type'];
-
+$kind = $_POST['kind'];
 $type_name = ($type=='R')?"REGULAR":"PRIORITY";
 
 $my_no_ = FM_SELECT_QUERY("COUNT(*)","tbl_que","DATE(que_date) = '$date' AND que_type = '$type'");
@@ -10,7 +10,8 @@ $current_number = $my_no_[0] + 1;
 $form = array(
 	'que_no' => $current_number,
 	'que_type' => $type,
-	'que_date' => $date_time
+	'que_date' => $date_time,
+	'kind' => $kind
 );
 
 FM_INSERT_QUERY("tbl_que",$form);

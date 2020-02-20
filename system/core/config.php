@@ -3,10 +3,10 @@ error_reporting(0);
 // GLOBALS DATABASE CONFIG AND OTHERS
 	$GLOBALS['config'] = array(
 		'mysql' => array(
-			'host'         => 'mysql.hostinger.com',
-			'username'     => 'u764488932_que',
-			'password'     => 'que12345',
-			'database'	   => 'u764488932_que'
+			'host'         => 'localhost',
+			'username'     => 'root',
+			'password'     => '',
+			'database'	   => 'ceneco_db'
 		),
 
 		'footer' => array(
@@ -36,6 +36,7 @@ error_reporting(0);
 	@mysql_query("SET SESSION sql_mode=''");
 
 
+	$my_kind_arr = array('Bill Payment','New Application','Other Transactions');
 // INCLUDE ALL FUNCTIONS
 	foreach(unserialize(VALUE) as $val){
 		if(!empty($val)){

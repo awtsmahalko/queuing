@@ -7,9 +7,9 @@ if(isset($teller_id)){
   $teller_data = FM_SELECT_QUERY("teller_name","tbl_teller","teller_id = '$teller_id'");
   $teller_name = $teller_data[0];
 
-  $curr_data = FM_SELECT_QUERY("que_no,que_type","tbl_que_board","date = '$date' AND teller_id = '$teller_id' AND status = 0");
+  $curr_data = FM_SELECT_QUERY("que_no,que_type,kind","tbl_que_board","date = '$date' AND teller_id = '$teller_id' AND status = 0");
   if($curr_data[0]>0){
-    $my_que = "<h1 style='margin:auto;'>".$array_type[$curr_data['que_type']]."</h1><span style='font-size:200px'>".sprintf("%04d",$curr_data[0])."</span><h2 style='margin:auto;'>(Other Transactions)</h2>";
+    $my_que = "<h1 style='margin:auto;'>".$array_type[$curr_data['que_type']]."</h1><span style='font-size:200px'>".sprintf("%04d",$curr_data[0])."</span><h2 style='margin:auto;'>(".$my_kind_arr[$curr_data[kind]].")</h2>";
   }else{
     $my_que = "<span style='font-size:200px'>------</span>";
   }
@@ -57,8 +57,8 @@ if(isset($teller_id)){
 </head>
 <body onload='startTime()' <?=$body_text?> >
   <div class="well text-center" style='background-color:#049408;color:#fff;'>
-    <h1 style='margin:auto;'>MULTI TRANSACTIONS QUEUING SYSTEM</h1>
-    <h3 style='margin:auto;'><span id="date-txt"></span> <span id="time-txt"></span></h3> 
+    <h3 style="margin: auto;">MULTI TRANSACTION QUEUING SYSTEM</h3>
+    <h4 style="margin: auto;"><span id="date-txt"></span> <span id="time-txt"></span></h4>
   </div>
   <div class="container" style="padding: unset;">
     <?php if(isset($teller_id)){?>

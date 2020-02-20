@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../assets/css/font-awesome.min.css">
   <script src="../../assets/js/jquery.min.js"></script>
   <script src="../../assets/js/bootstrap.min.js"></script>
   <script type="text/javascript">
@@ -34,64 +35,150 @@
       return i;
     }
   </script>
+  <style>
+    .info-box {
+        box-shadow: 0 0 14px 11px rgba(21, 18, 18, 0.125), 0 1px 3px rgba(0,0,0,.2);
+        border-radius: .25rem;
+        background: #fff;
+        display: -ms-flexbox;
+        display: flex;
+        margin-bottom: 1rem;
+        min-height: 120px;
+        padding: 1.5rem;
+        position: relative;
+    }
+    .info-box .info-box-icon {
+        border-radius: .25rem;
+        -ms-flex-align: center;
+        align-items: center;
+        display: -ms-flexbox;
+        display: flex;
+        font-size: 1.875rem;
+        -ms-flex-pack: center;
+        justify-content: center;
+        text-align: center;
+        width: 90px;
+    }
+    .info-box .info-box-content {
+        -ms-flex: 1;
+        flex: 1;
+        padding: 5px 10px;
+    }
+    .info-box .info-box-text, .info-box .progress-description {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .info-box .info-box-number {
+        display: block;
+        font-weight: 700;
+    }
+    .bg-info, .bg-info>a {
+      color: #fff!important;
+    }
+    .bg-info {
+        background-color: #17a2b8!important;
+    }
+    .bg-warning, .bg-warning>a {
+        color: #1f2d3d!important;
+    }
+    .bg-warning {
+        background-color: #ffc107!important;
+    }
+    .bg-success, .bg-success>a {
+        color: #fff!important;
+    }
+    .bg-success {
+        background-color: #28a745!important;
+    }
+    .bg-danger, .bg-danger>a {
+        color: #fff!important;
+    }
+    .bg-danger {
+        background-color: #dc3545!important;
+    }
+    *, ::after, ::before {
+        box-sizing: border-box;
+    }
+  </style>
 </head>
 <body onload="startTime()">
   <div class="well text-center" style='background-color:#049408;color:#fff;'>
-    <h1 style="margin: unset;">MULTI TRANSACTION QUEUING SYSTEM</h1>
-    <h3 style="margin: unset;"><span id="date-txt"></span> <span id="time-txt"></span></h3> 
+    <h3 style="margin: unset;">MULTI TRANSACTION QUEUING SYSTEM</h3>
+    <h4 style="margin: unset;"><span id="date-txt"></span> <span id="time-txt"></span></h4> 
   </div>
   <div id="kind-content" class="container" style="margin: unset;width: 100%;">
-    <div class="col-md-12" style="margin-top: 5%;">
-      <div class="col-sm-4">
-        <div onclick="myKind(0)" class="card jumbotron text-center" style="background-color: #049408;cursor: pointer;">
-          <div class="card-img-overlay">
-            <h2 class="card-title" style="font-weight: bold;color: white;">BILLS PAYMENT</h2>
+    <div class="col-md-12" style="margin-top: 5%;margin-bottom: 500px;">
+      <div class="col-md-4" onclick="myKind(0)" style="cursor: pointer;">
+        <div class="info-box">
+          <span class="info-box-icon bg-info">
+            <i class="fa fa-ticket" style="font-size:-webkit-xxx-large;"></i>
+          </span>
+          <div class="info-box-content">
+            <h1 style="color: green;"> BILLS<br>PAYMENT</h1>
           </div>
         </div>
       </div>
-      <div class="col-sm-4">
-        <div onclick="myKind(1)" class="card jumbotron text-center" style="background-color: #049408;cursor: pointer;">
-          <div class="card-img-overlay">
-            <h2 class="card-title" style="font-weight: bold;color: white;">NEW APPLICATION</h2>
+      <div class="col-md-4" onclick="myKind(1)" style="cursor: pointer;">
+        <div class="info-box">
+          <span class="info-box-icon bg-success">
+            <i class="fa fa-plus-circle" style="font-size:-webkit-xxx-large;"></i>
+          </span>
+          <div class="info-box-content">
+            <h1 style="color: green;"> NEW <br>APPLICATION</h1>
           </div>
         </div>
       </div>
-      <div class="col-sm-4">
-        <div onclick="myKind(2)" class="card jumbotron text-center" style="background-color: #049408;cursor: pointer;">
-          <div class="card-img-overlay">
-            <h2 class="card-title" style="font-weight: bold;color: white;">OTHER TRANSACTIONS</h2>
+      <div class="col-md-4" onclick="myKind(2)" style="cursor: pointer;">
+        <div class="info-box">
+          <span class="info-box-icon bg-danger">
+            <i class="fa fa-list" style="font-size:-webkit-xxx-large;"></i>
+          </span>
+          <div class="info-box-content">
+            <h1 style="color: green;"> OTHER <br>TRANSACTIONS</h1>
           </div>
         </div>
       </div>
     </div>
   </div>
   <div id="type-content" class="container" style="margin: unset;width: 100%;display: none;">
-    <div class="col-md-12" style="margin-top: 5%;">
-      <center><h1 id="kind-name"></h1></center>
-      <div class="col-sm-6">
-        <div onclick="printMe('R')" class="card jumbotron text-center" style="background-color: #049408;cursor: pointer;">
-          <div class="card-img-overlay">
-            <h1 class="card-title" style="font-weight: bold;color: white;">REGULAR<br></h1>
+    <div class="col-md-12" style="margin-bottom: 500px;">
+      <div class="btn-group" role="group">
+        <button class="btn btn-default" style="font-size: 30px; padding: 5px; color: green;" onclick="showKind()">
+          <strong id="kind-name"></strong>
+        </button>
+      </div><br><br>
+      <div class="col-md-4" onclick="printMe('R')" style="cursor: pointer;">
+        <div class="info-box">
+          <span class="info-box-icon bg-success">
+            <i class="fa fa-users" style="font-size:-webkit-xxx-large;"></i>
+          </span>
+          <div class="info-box-content">
+            <h1 style="color: green;"> REGULAR</h1>
           </div>
         </div>
-      </div> 
-      <div class="col-sm-6">
-        <div onclick="printMe('P')" class="card jumbotron text-center" style="background-color: #049408;cursor: pointer;">
-          <div class="card-img-overlay">
-            <h2 class="card-title" style="font-weight: bold;color: white;">PWD<br>SENIOR CITIZEN<br>PREGNANT</h2>
+      </div>
+      <div class="col-md-8" onclick="printMe('P')" style="cursor: pointer;">
+        <div class="info-box">
+          <span class="info-box-icon bg-danger">
+            <i class="fa fa-wheelchair" style="font-size:-webkit-xxx-large;"></i>
+          </span>
+          <div class="info-box-content">
+            <h1 style="color: green;"> PWD / SENIOR CITIZEN / PREGNANT</h1>
           </div>
         </div>
-      </div> 
+      </div>
     </div>
   </div>
 </body>
 <script type="text/javascript">
-  var my_kind = ["Bills Payment","New Application","Other Transactions"];
+  var my_kind = ["<span class='fa fa-ticket'></span> Bills Payment ","<span class='fa fa-plus-circle'></span> New Application ","<span class='fa fa-list'></span> Other Transactions "];
   var my_type = {"R":'<span style="font-size:30px;">PRIORITY</span>',"P":'<span style="font-size:15px;">PWD/SENIOR CITIZEN<br>/PREGNANT</span>'};
   function printMe(type){
-    $("#kind-content").show();
-    $("#type-content").hide('fade');
+    showKind();
     $.post("../ajax/que_new_customer.php",{
+      kind : kind_id,
       type:type
     },function(data,status){
       var o = JSON.parse(data);
@@ -100,7 +187,13 @@
     // Popup(type,type);
   }
 
+  function showKind(){
+    $("#kind-content").show();
+    $("#type-content").hide('fade');
+  }
+
   function myKind(kind){
+    kind_id = kind;
     $("#kind-content").hide('fade');
     $("#kind-name").html(my_kind[kind]);
     $("#type-content").show();

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>MULTI TRANSACTION QUEUING</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../assets/css/font-awesome.min.css">
+  <script src="../../assets/js/jquery.min.js"></script>
+  <script src="../../assets/js/bootstrap.min.js"></script>
+  <script src="../../assets/js/chart.min.js"></script>
+  <script type="text/javascript">
+    function startTime() {
+      var today = new Date();
+
+      var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+      var month_ = months[today.getMonth()];
+      var date_ = today.getDate();
+      var year_ = today.getFullYear();
+
+      var h = today.getHours();
+      var m = today.getMinutes();
+      var s = today.getSeconds();
+      m = checkTime(m);
+      s = checkTime(s);
+
+      var hour_ = h - (h >= 12 ? 12 : 0);
+      var period = h >= 12 ? 'PM' : 'AM';
+      document.getElementById('date-txt').innerHTML = month_ + " " + date_ + ", " +year_;
+      document.getElementById('time-txt').innerHTML = hour_ + ":" + m + " " +period;
+      var t = setTimeout(startTime, 500);
+    }
+    function checkTime(i) {
+      if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+      return i;
+    }
+  </script>
+</head>
+<body onload='startTime()'>
+  <div class="well text-center" style='background-color:#049408;color:#fff;'>
+    <h3 style="margin: auto;">MULTI TRANSACTION QUEUING SYSTEM</h3>
+    <h4 style="margin: auto;"><span id="date-txt"></span> <span id="time-txt"></span></h4>
+  </div>
+  <div class="container" style="margin: auto;width:80%;">
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#home">COUNTER</a></li>
+        <li><a data-toggle="tab" href="#menu1" onclick="getLine()">REPORT</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="home" class="tab-pane fade in active">
+        <h3>
+            Counters
+            <button style="float: right;" class="btn btn-primary" onclick="newTeller()">
+              <span class="fa fa-plus-circle"></span> New Counter
+            </button>
+        </h3>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr style='background-color:green;color:#fff;'>
+                    <th scope="col">#</th>
+                    <th scope="col">Counter Name</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody id="teller-content">
+            </tbody>
+        </table>
+
+        </div>
+        <div id="menu1" class="tab-pane fade">
+          <h3>Annual Report of Customers (2020)</h3>
+          <div class="col-md-10">
+            <canvas id="lineChart"></canvas>
+          </div>
+        </div>
+    </div>
+  </div>
+</body>
+<script type="text/javascript">
+  getCounter();
+  function getCounter(){
+    $.post("../ajax/controller_get_teller.php",{
+    },function(data,status){
+      $("#teller-content").html(data);
+    });
+  }
+  function changeTeller(teller_id,ele){
+    var teller_name = ele.innerHTML;
+    $.post("../ajax/controller_update_teller.php",{
+      teller_id:teller_id,
+      teller_name:teller_name
+    },function(data,status){
+      // alert(data);
+      getCounter();
+      if(data == 1){
+      }else if(data == -1){
+        alert("Sorry, counter name already exist");
+      }else{
+        alert("Sorry, error occur");
+      }
+    });
+  }
+  function newTeller(){
+    var teller_name = prompt("Please enter Counter Name", "Counter ");
+    if(teller_name != null){
+      $.post("../ajax/controller_add_teller.php",{
+        teller_name:teller_name
+      },function(data,status){
+        getCounter();
+        if(data == 1){
+        }else if(data == -1){
+          alert("Sorry, counter name already exist");
+        }else{
+          alert("Sorry, error occur");
+        }
+      });
+    }
+  }
+  function deleteTeller(teller_id){
+    var is_confirm = confirm("Are you sure to delete this counter?");
+    if(is_confirm == true){
+      $.post("../ajax/controller_delete_teller.php",{
+        teller_id:teller_id
+      },function(data,status){
+        getCounter();
+        if(data == 1){
+          alert("Teller succesfully deleted");
+        }else{
+          alert("Sorry, error occur");
+        }
+      });
+    }
+  }
+
+  function getLine(){
+    //line
+    var ctxL = document.getElementById("lineChart").getContext('2d');
+    var myLineChart = new Chart(ctxL, {
+    type: 'line',
+    data: {
+    labels: ["January", "February", "March", "April", "May", "June", "July"],
+    datasets: [{
+      label: "My First dataset",
+      data: [65, 59, 80, 81, 56, 55, 40],
+      backgroundColor: [
+      'rgba(105, 0, 132, .2)',
+      ],
+      borderColor: [
+      'rgba(200, 99, 132, .7)',
+      ],
+      borderWidth: 2
+    },
+    {
+      label: "My Second dataset",
+      data: [28, 48, 40, 19, 86, 27, 90],
+      backgroundColor: [
+      'rgba(0, 137, 132, .2)',
+      ],
+      borderColor: [
+      'rgba(0, 10, 130, .7)',
+      ],
+      borderWidth: 2
+    }
+    ]
+    },
+    options: {
+    responsive: true
+    }
+    });
+  }
+</script>
+</html>
