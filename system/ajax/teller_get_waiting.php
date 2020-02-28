@@ -5,7 +5,11 @@ $loop = FM_SELECT_LOOP_QUERY("*","tbl_que","DATE(que_date) = '$date' AND que_sta
 $content = "";
 if(count($loop)>0){
     foreach($loop as $row){
-        $content .= "<li class='list-group-item'>$row[que_type]-".sprintf("%04d", $row[que_no])."</li>";
+        $que_no_text = sprintf("%04d", $row[que_no]);
+        $text = ($row[que_type]=='P')?
+            "<span style='color:red;'>$que_no_text (".$my_type_arr[$row[que_type]].")</span>": 
+            "<span>$que_no_text (".$my_type_arr[$row[que_type]].")</span>";
+        $content .= "<li class='list-group-item'>$text</li>";
     }
 }
 

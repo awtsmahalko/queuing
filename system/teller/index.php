@@ -1,6 +1,6 @@
 <?php
 include '../core/config.php';
-$teller_id = $_REQUEST['q'];
+$teller_id = $_SESSION['que']['teller_id'];
 if(isset($teller_id)){
   $array_type = array('P' => 'PWD/SENIOR CITIZEN/PREGNANT','R' => 'REGULAR');
   $body_text = "onkeypress='key_press_event(event)'";
@@ -20,10 +20,11 @@ if(isset($teller_id)){
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>CENECO QUEUING</title>
+  <title>MULTI TRANSACTIONS QUEUING</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../assets/css/font-awesome.min.css">
   <script src="../../assets/js/jquery.min.js"></script>
   <script src="../../assets/js/bootstrap.min.js"></script>
   <script type="text/javascript">
@@ -60,9 +61,9 @@ if(isset($teller_id)){
     <h3 style="margin: auto;">MULTI TRANSACTION QUEUING SYSTEM</h3>
     <h4 style="margin: auto;"><span id="date-txt"></span> <span id="time-txt"></span></h4>
   </div>
-  <div class="container" style="padding: unset;">
+  <div class="container" style="padding: unset;width:100%;">
     <?php if(isset($teller_id)){?>
-      <div class="row">
+      <div class="col-md-12">
         <div class="col-md-8">
           <div class="panel panel-default" style='border-color:#049408;'>
             <div class="panel-heading text-center"  style='background-color:#049408;color:#fff;'>
@@ -72,40 +73,105 @@ if(isset($teller_id)){
               <span style="color:#049408;" id='counter-que'><?=$my_que?></span>
             </div>
             <div class="panel-footer text-center">
-              <button type="button" class="btn btn-lg btn-danger" onclick="recallQue()"> RECALL QUE ( R )</button>
+              <button type="button" class="btn btn-lg btn-danger" onclick="recallQue()"><span class='fa fa-microphone'></span> RECALL QUE ( R )</button>
               <button type="button" class="btn btn-lg btn-primary" onclick='next_que()'> <span class="fa fa-arrow-right"></span> NEXT QUE ( N )</button>
             </div>
           </div>
         </div>
         <div class="col-md-4">
           <div class="panel panel-default" style='border-color:#049408;'>
-            <div class="panel-heading" style='background-color:#049408;color:#fff;'>Waiting list.... </div>
+            <div class="panel-heading" style='background-color:#049408;color:#fff;'><span class='fa fa-gears'></span> Account Details</div>
             <div class="panel-body">
-              <ul class="list-group" id='waiting-list' style='min-height:350px;max-height:350px;overflow:auto;color:#049408;'>
+                <div class="input-group" style='margin-bottom:2px;'>
+                  <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                  <input type="text" class="form-control" id="username" placeholder="Username" value='<?=$_SESSION['que']['username']?>'>
+                </div>
+                <div class="input-group" style='margin-bottom:2px;'>
+                  <span class="input-group-addon"><i class="fa fa-key"></i></span>
+                  <input type="password" class="form-control" id="curr-password" placeholder="Current Password">
+                </div>
+                <div class="input-group" style='margin-bottom:2px;'>
+                  <span class="input-group-addon"><i class="fa fa-key"></i></span>
+                  <input type="password" class="form-control" id="password" placeholder="New Password">
+                </div>
+                <div class="input-group">
+                  <span class="input-group-addon"><i class="fa fa-key"></i></span>
+                  <input type="password" class="form-control" id="password-repeat" placeholder="Repeat New Password">
+                </div>
+            </div>
+            <div class="panel-footer text-center">
+              <button type="button" class="btn btn-sm btn-primary" onclick='updateAccount()'>
+                <span class='fa fa-edit'></span> UPDATE ACCOUNT DETAILS
+              </button>
+              <button type="button" class="btn btn-sm btn-danger" onclick='logOut()'>
+                <span class='fa fa-sign-out'></span> LOGOUT
+              </button>
+            </div>
+          </div>
+          <div class="panel panel-default" style='border-color:#049408;'>
+            <div class="panel-heading" style='background-color:#049408;color:#fff;'><span class='fa fa-refresh'></span> Waiting list.... </div>
+            <div class="panel-body">
+              <ul class="list-group" id='waiting-list' style='min-height:150px;max-height:150px;overflow:auto;color:#049408;'>
               </ul>
             </div>
           </div>
         </div>
       </div>
-    <?php }else{
-      $teller_id = 0;
-      $loop_teller = FM_SELECT_LOOP_QUERY("*","tbl_teller","teller_status = 1");
-      if(count($loop_teller)>0){
-        foreach($loop_teller as $row){
-          echo '<div class="col-sm-6">
-          <div class="card jumbotron text-center" style="cursor: pointer;" onclick="linkMe('.$row[0].')">
-            <div class="card-img-overlay">
-              <h1 class="card-title" style="font-weight: bold;">'.$row['teller_name'].'</h1>
+    <?php }else{ $teller_id = 0; ?>
+      <div class="col-md-12">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+          <form id='login-page' method='POST'>
+            <div class="panel panel-default" style='border-color:#049408;'>
+              <div class="panel-heading text-center"  style='background-color:#049408;color:#fff;'>
+                <h2 style='margin:auto;'>LOG IN PAGE</h2>
+              </div>
+              <div class="panel-body text-center">
+                <div class="input-group" style='margin-bottom:5px;'>
+                  <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                  <input type="text" class="form-control" name="username" placeholder="Username" required>
+                </div>
+                <div class="input-group" style='margin-bottom:5px;'>
+                  <span class="input-group-addon"><i class="fa fa-key"></i></span>
+                  <input type="password" class="form-control" name="password" placeholder="Password" required>
+                </div>
+                <span style='color:red;' id='response'></span>
+              </div>
+              <div class="panel-footer text-center">
+                <button type="submit" class="btn btn-primary" id="btn_login">
+                  <i class='glyphicon glyphicon-share'></i> LOGIN
+                </button>
+              </div>
             </div>
-          </div>
-        </div>';
-        }
-      }
-    } ?>
+          </form>
+        </div>
+      </div>
+    <?php } ?>
   </div>
 </body>
 <script type="text/javascript">
 var teller_id = <?=$teller_id?>;
+var ltseale_rps = "<?=$_SESSION['que']['password']?>";
+  $('#login-page').submit(function(e){
+    $("#btn_login").prop("disabled",true);
+    $("#btn_login").html("<span class='fa fa-spin fa-spinner'></span> Loading...");
+
+    e.preventDefault();
+    $.ajax({
+      type:"POST",
+      url:"../ajax/teller_login.php",
+      data:$('#login-page').serialize(),
+      success:function(data){
+        if(data == 1){
+          location.reload();
+        }else{
+          $("#response").html("<i class='glyphicon glyphicon-info-sign'></i> Oops Incorrect username or password!");
+        }
+        $("#btn_login").prop("disabled",false);
+        $("#btn_login").html("<i class='glyphicon glyphicon-share'></i> LOGIN");
+      }
+    });
+  });
   function next_que(){
     $.post("../ajax/teller_finish_que.php",{
       teller_id:teller_id
@@ -142,6 +208,55 @@ var teller_id = <?=$teller_id?>;
       teller_id:teller_id
     },function(data,status){
     });
+  }
+  function logOut(){
+    var conf = confirm("Are you sure to logout?");
+    if(conf == true){
+      $.post("../ajax/teller_logout.php",{
+      },function(data,status){
+        location.reload();
+      });
+    }
+  }
+
+  function logOut_(){
+    $.post("../ajax/teller_logout.php",{
+    },function(data,status){
+      location.reload();
+    });
+  }
+
+  function updateAccount(){
+    var username = $("#username").val();
+    var curr_pass = $("#curr-password").val();
+    var password = $("#password").val();
+    var password_repeat = $("#password-repeat").val();
+
+    if(username == ''){
+      alert("Please input username");
+    }else if(curr_pass != ltseale_rps){
+      alert("Current Password is incorrect");
+    }else if(password == ''){
+      alert("New Password is required");
+    }else if(password != password_repeat){
+      alert("New Password does not match");
+    }else{
+      $.post("../ajax/teller_update_account.php",{
+        teller_id:teller_id,
+        password:password,
+        username:username
+      },function(data,status){
+        if(data == 2){
+          alert("Account username already exist!");
+        }else if(data == 1){
+          alert("Account successfully updated!\nYou have to login again for security");
+          logOut_();
+        }else{
+          alert("Error occur!");
+        }
+        location.reload();
+      });
+    }
   }
 </script>
 </html>
