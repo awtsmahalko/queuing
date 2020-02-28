@@ -37,6 +37,7 @@ error_reporting(0);
 
 
 	$my_kind_arr = array('Bill Payment','New Application','Other Transactions');
+	$my_type_arr = array('P' => 'PWD / SENIOR CITIZEN / PREGNANT','R' => 'REGULAR');
 // INCLUDE ALL FUNCTIONS
 	foreach(unserialize(VALUE) as $val){
 		if(!empty($val)){
