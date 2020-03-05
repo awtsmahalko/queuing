@@ -174,9 +174,10 @@
 </body>
 <script type="text/javascript">
   var my_kind = ["<span class='fa fa-ticket'></span> Bills Payment ","<span class='fa fa-plus-circle'></span> New Application ","<span class='fa fa-list'></span> Other Transactions "];
+  var my_kind_ = ["Bills Payment","New Application ","Other Transactions"];
   var my_type = {"R":'<span style="font-size:30px;">REGULAR</span>',"P":'<span style="font-size:15px;">PWD/SENIOR CITIZEN<br>/PREGNANT</span>'};
   function printMe(type){
-    showKind();
+    // showKind();
     $.post("../ajax/que_new_customer.php",{
       kind : kind_id,
       type:type
@@ -201,23 +202,14 @@
   function Popup(type_name,que_no,date_time) {
     var myWindow = window.open('', 'Print Queuing', 'height=300,width=300');
     myWindow.document.write('<html><head><title>Print Queuing</title>');
-    /*optional stylesheet*/ //myWindow.document.write('<link rel="stylesheet" href="main.css" type="text/css" />');
+
     myWindow.document.write('</head><body >');
-    myWindow.document.write('<div style="font-size:12pt; font-weight:bold; width: 250px;"><span style="font-size:11px;">QUEUING SYSTEM</span><br><span style="font-size:11px;">Bacolod City</span><br><br>'+my_type[type_name]+'<br><span style="font-size: 60px;">'+que_no+'</span><br><br><span style="font-size: 12px;">'+date_time+'</span></div>')
+    myWindow.document.write('<div style="font-size:12pt; font-weight:bold; width: 250px;"><span style="font-size:11px;">QUEUING SYSTEM</span><br><span style="font-size:11px;">Bacolod City</span><br><br>'+my_type[type_name]+'<br><span style="font-size: 60px;">'+que_no+'</span><br><br><span style="font-size: 25px;">'+my_kind_[kind_id]+'</span><br><span style="font-size: 12px;">'+date_time+'</span></div>')
     myWindow.document.write('</body></html>');
     myWindow.document.close(); // necessary for IE >= 10
 
-     // myWindow.focus(); // necessary for IE >= 10
-      myWindow.print();
+    myWindow.print();
     myWindow.close();
-   // myWindow.onload = function () { 
-    // setTimeout(function () { myWindow.close(); }, 500); 
-  // }
-     // myWindow.onload=function(){
-     //  myWindow.focus(); // necessary for IE >= 10
-      //  myWindow.print();
-      // myWindow.close();
-   //  };
   }
 </script>
 </html>
