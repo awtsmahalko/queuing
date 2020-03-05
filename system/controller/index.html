@@ -52,7 +52,7 @@
         <div id="home" class="tab-pane fade in active">
         <h3>
             Counters
-            <button style="float: right;" class="btn btn-primary" onclick="newTeller()">
+            <button type="button" class="btn btn-primary" style="float: right;" onclick="newTellerModal()">
               <span class="fa fa-plus-circle"></span> New Counter
             </button>
         </h3>
@@ -61,6 +61,7 @@
                 <tr style='background-color:green;color:#fff;'>
                     <th scope="col">#</th>
                     <th scope="col">Counter Name</th>
+                    <th scope="col">Username</th>
                     <th scope="col">Action</th>
                 </tr>
             </thead>
@@ -75,6 +76,35 @@
             <canvas id="lineChart"></canvas>
           </div>
         </div>
+    </div>
+  </div>
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Add New Counter Modal</h4>
+        </div>
+        <div class="modal-body">
+          <div class="input-group" style='margin-bottom:2px;'>
+            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+            <input type="text" class="form-control" id="teller_name" placeholder="Counter Name">
+          </div>
+          <div class="input-group" style='margin-bottom:2px;'>
+            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+            <input type="text" class="form-control" id="username" placeholder="Username">
+          </div>
+          <div class="input-group" style='margin-bottom:2px;'>
+            <span class="input-group-addon"><i class="fa fa-key"></i></span>
+            <input type="password" class="form-control" id="password" placeholder="Password">
+          </div>
+          <p style="color: red;"><strong id="res"></strong></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" id="btn-add" onclick='newTeller()'> Add Counter</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
     </div>
   </div>
 </body>
@@ -102,19 +132,49 @@
       }
     });
   }
+  function newTellerModal(){
+    $("#teller_name").val('');
+    $("#username").val('');
+    $("#password").val('');
+    $("#myModal").modal('show');
+  }
   function newTeller(){
-    var teller_name = prompt("Please enter Counter Name", "Counter ");
-    if(teller_name != null){
+    var teller_name = $("#teller_name").val();
+    var username = $("#username").val();
+    var password = $("#password").val();
+
+    if (teller_name == '') {
+      $("#res").html('<span class="fa fa-exclamation-circle"></span> Please input Teller Name');
+      $("#teller_name").focus();
+    }else if (username == ''){
+      $("#username").focus();
+      $("#res").html('<span class="fa fa-exclamation-circle"></span> Please input Username');
+    }else if (password == ''){
+      $("#password").focus();
+      $("#res").html('<span class="fa fa-exclamation-circle"></span> Please input Password');
+    }else{
+      $("#btn-add").prop('disabled',true);
+      $("#btn-add").html("<span class='fa fa-spin fa-spinner'></span> Loading");
       $.post("../ajax/controller_add_teller.php",{
-        teller_name:teller_name
+        teller_name:teller_name,
+        username:username,
+        password:password
       },function(data,status){
         getCounter();
-        if(data == 1){
-        }else if(data == -1){
-          alert("Sorry, counter name already exist");
+        if(data == -1){
+          $("#res").html('<span class="fa fa-exclamation-circle"></span> Counter Name already exists');
+          $("#teller_name").focus();
+        }else if(data == -2){
+          $("#res").html('<span class="fa fa-exclamation-circle"></span> Username already exists');
+          $("#username").focus();
+        }else if(data == 1){
+          $("#myModal").modal('hide');
         }else{
-          alert("Sorry, error occur");
+          $("#myModal").modal('hide');
+          alert("error 500");
         }
+        $("#btn-add").prop('disabled',false);
+        $("#btn-add").html(" Add Counter");
       });
     }
   }
