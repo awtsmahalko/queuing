@@ -8,7 +8,7 @@ if(count($loop_teller)>0){
             <td>$count</td>
             <td contenteditable='true' onblur='changeTeller($row[teller_id],this)'>$row[teller_name]</td>
             <td>$row[username]</td>
-            <td onclick='deleteTeller($row[teller_id])'><button class='btn btn-sm btn-danger'><span class='fa fa-trash'></span></button></td>
+            <td><button onclick='deleteTeller($row[teller_id])' class='btn btn-sm btn-danger'><span class='fa fa-trash'></span></button></td>
         </tr>";
         $count++;
     }

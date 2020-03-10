@@ -469,5 +469,15 @@
       });
     }
   }
+  function deleteAdmin(admin_id,name){
+    var del_ = confirm("Are you sure to remove admin :: "+name);
+    if(del_ == true){
+      $.post("../ajax/controller_delete_admin.php",{
+        admin_id:admin_id
+      },function(data,status){
+        getAdmin();
+      });
+    }
+  }
 </script>
 </html>
