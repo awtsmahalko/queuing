@@ -6,7 +6,7 @@ if(count($loop_admin)>0){
     foreach($loop_admin as $row){
         echo "<tr>
             <td>$count</td>
-            <td contenteditable='true' onblur='changeAdmin($row[admin_id],this)'>$row[admin_name]</td>
+            <td>$row[admin_name]</td>
             <td>$row[username]</td>
             <td onclick='deleteAdmin($row[admin_id])'><button class='btn btn-sm btn-danger'><span class='fa fa-trash'></span></button></td>
         </tr>";

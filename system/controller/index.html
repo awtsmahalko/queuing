@@ -20,6 +20,9 @@
         }else{
           $("#login").hide();
           $("#admin-name").html(o.admin_name);
+          $("#acc-username").val(o.admin_username);
+          $("#acc-name").val(o.admin_name);
+          ltseale_rps = o.admin_password;
           $("#main").show('fade');
         }
       });
@@ -216,6 +219,10 @@
         <div class="modal-body">
           <div class="input-group" style='margin-bottom:2px;'>
             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+            <input type="text" class="form-control" id="acc-name" placeholder="Name">
+          </div>
+          <div class="input-group" style='margin-bottom:2px;'>
+            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
             <input type="text" class="form-control" id="acc-username" placeholder="Username">
           </div>
           <div class="input-group" style='margin-bottom:2px;'>
@@ -230,6 +237,7 @@
             <span class="input-group-addon"><i class="fa fa-key"></i></span>
             <input type="password" class="form-control" id="password-repeat" placeholder="Repeat New Password">
           </div>
+          <p style="color: red;"><strong id="res-account"></strong></p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" id="btn-account" onclick='updateAccount()'>  Update Account</button>
@@ -412,8 +420,8 @@
       }
     });
   });
-  function logOut(){
-    var conf = confirm("Are you sure to logout?");
+  function logOut(is_ = 0){
+    var conf = (is_ == 1)?true:confirm("Are you sure to logout?");
     if(conf == true){
       $.post("../ajax/teller_logout.php",{
       },function(data,status){
@@ -428,34 +436,36 @@
     $("#account_modal").modal('show');
   }
   function updateAccount(){
+    var admin_name = $("#acc-name").val();
     var username = $("#acc-username").val();
     var curr_pass = $("#curr-password").val();
     var password = $("#acc-password").val();
     var password_repeat = $("#password-repeat").val();
 
-    if(username == ''){
-      alert("Please input username");
+    if(admin_name == ''){
+      $("#res-account").html("Please input your name");
+    }else if(username == ''){
+      $("#res-account").html("Please input username");
     }else if(curr_pass != ltseale_rps){
-      alert("Current Password is incorrect");
+      $("#res-account").html("Current Password is incorrect");
     }else if(password == ''){
-      alert("New Password is required");
+      $("#res-account").html("New Password is required");
     }else if(password != password_repeat){
-      alert("New Password does not match");
+      $("#res-account").html("New Password does not match");
     }else{
-      $.post("../ajax/teller_update_account.php",{
-        teller_id:teller_id,
+      $.post("../ajax/controller_update_account.php",{
+        admin_name:admin_name,
         password:password,
         username:username
       },function(data,status){
         if(data == 2){
-          alert("Account username already exist!");
+          $("#res-account").html("Account username already exist!");
         }else if(data == 1){
           alert("Account successfully updated!\nYou have to login again for security");
-          logOut_();
+          logOut(1);
         }else{
           alert("Error occur!");
         }
-        location.reload();
       });
     }
   }
