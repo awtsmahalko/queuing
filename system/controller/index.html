@@ -10,6 +10,23 @@
   <script src="../../assets/js/bootstrap.min.js"></script>
   <script src="../../assets/js/chart.min.js"></script>
   <script type="text/javascript">
+    function session_checker(){
+      $.post("../ajax/controller_check_admin_session.php",{
+      },function(data,status){
+        var o = JSON.parse(data);
+        if(o.is_session == 0){
+          $("#login").show('fade');
+          $("#main").hide();
+        }else{
+          $("#login").hide();
+          $("#admin-name").html(o.admin_name);
+          $("#acc-username").val(o.admin_username);
+          $("#acc-name").val(o.admin_name);
+          ltseale_rps = o.admin_password;
+          $("#main").show('fade');
+        }
+      });
+    }
     function startTime() {
       var today = new Date();
 
@@ -42,10 +59,17 @@
     <h3 style="margin: auto;">MULTI TRANSACTION QUEUING SYSTEM</h3>
     <h4 style="margin: auto;"><span id="date-txt"></span> <span id="time-txt"></span></h4>
   </div>
-  <div class="container" style="margin: auto;width:80%;">
+  <div id='main' class="container" style="margin: auto;width:80%;display: none;">
+    <h1>Welcome
+      <i><strong id="admin-name"></strong></i>
+      <button class="btn btn-danger" style="float: right;" onclick="logOut()"><span class='fa fa-sign-out'></span> Logout</button>
+      <button class="btn btn-default" style="float: right;" onclick="account_modal()"><span class='fa fa-gears'></span> Account</button>
+    </h1>
+    <hr>
     <ul class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#home" onclick="getCounter()">COUNTER</a></li>
         <li><a data-toggle="tab" href="#menu1" onclick="getLine()">REPORT</a></li>
+        <li><a data-toggle="tab" href="#menu2" onclick="getAdmin()">ADMINISTRATOR</a></li>
     </ul>
 
     <div class="tab-content">
@@ -68,7 +92,6 @@
             <tbody id="teller-content">
             </tbody>
         </table>
-
         </div>
         <div id="menu1" class="tab-pane fade">
           <h3>Annual Report of Customers (2020)</h3>
@@ -76,6 +99,56 @@
             <canvas id="lineChart"></canvas>
           </div>
         </div>
+        <div id="menu2" class="tab-pane">
+          <h3>
+              Admin
+              <button type="button" class="btn btn-primary" style="float: right;" onclick="newAdminModal()">
+                <span class="fa fa-plus-circle"></span> New Admin
+              </button>
+          </h3>
+          <table class="table">
+              <thead class="thead-dark">
+                  <tr style='background-color:green;color:#fff;'>
+                      <th scope="col">#</th>
+                      <th scope="col">Admin Name</th>
+                      <th scope="col">Username</th>
+                      <th scope="col">Action</th>
+                  </tr>
+              </thead>
+              <tbody id="admin-content">
+              </tbody>
+          </table>
+          </div>
+    </div>
+  </div>
+  <div id='login' class="container" style="margin: auto;width:80%;display: none;">
+    <div class="col-md-12">
+      <div class="col-md-3"></div>
+      <div class="col-md-6">
+        <form id='login-page' method='POST'>
+          <div class="panel panel-default" style='border-color:#049408;'>
+            <div class="panel-heading text-center"  style='background-color:#049408;color:#fff;'>
+              <h2 style='margin:auto;'>LOG IN PAGE</h2>
+            </div>
+            <div class="panel-body text-center">
+              <div class="input-group" style='margin-bottom:5px;'>
+                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                <input type="text" class="form-control" name="username" placeholder="Username" required>
+              </div>
+              <div class="input-group" style='margin-bottom:5px;'>
+                <span class="input-group-addon"><i class="fa fa-key"></i></span>
+                <input type="password" class="form-control" name="password" placeholder="Password" required>
+              </div>
+              <span style='color:red;' id='response'></span>
+            </div>
+            <div class="panel-footer text-center">
+              <button type="submit" class="btn btn-primary" id="btn_login">
+                <i class='glyphicon glyphicon-share'></i> LOGIN
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
   <div class="modal fade" id="myModal" role="dialog">
@@ -107,8 +180,75 @@
       </div>
     </div>
   </div>
+  <div class="modal fade" id="admin_modal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Add New Admin Modal</h4>
+        </div>
+        <div class="modal-body">
+          <div class="input-group" style='margin-bottom:2px;'>
+            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+            <input type="text" class="form-control" id="admin_name" placeholder="Admin Name">
+          </div>
+          <div class="input-group" style='margin-bottom:2px;'>
+            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+            <input type="text" class="form-control" id="admin_username" placeholder="Username">
+          </div>
+          <div class="input-group" style='margin-bottom:2px;'>
+            <span class="input-group-addon"><i class="fa fa-key"></i></span>
+            <input type="password" class="form-control" id="admin_password" placeholder="Password">
+          </div>
+          <p style="color: red;"><strong id="res-admin"></strong></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" id="btn-add-admin" onclick='newAdmin()'> Add Admin</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="account_modal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Account Settings</h4>
+        </div>
+        <div class="modal-body">
+          <div class="input-group" style='margin-bottom:2px;'>
+            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+            <input type="text" class="form-control" id="acc-name" placeholder="Name">
+          </div>
+          <div class="input-group" style='margin-bottom:2px;'>
+            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+            <input type="text" class="form-control" id="acc-username" placeholder="Username">
+          </div>
+          <div class="input-group" style='margin-bottom:2px;'>
+            <span class="input-group-addon"><i class="fa fa-key"></i></span>
+            <input type="password" class="form-control" id="curr-password" placeholder="Current Password">
+          </div>
+          <div class="input-group" style='margin-bottom:2px;'>
+            <span class="input-group-addon"><i class="fa fa-key"></i></span>
+            <input type="password" class="form-control" id="acc-password" placeholder="New Password">
+          </div>
+          <div class="input-group">
+            <span class="input-group-addon"><i class="fa fa-key"></i></span>
+            <input type="password" class="form-control" id="password-repeat" placeholder="Repeat New Password">
+          </div>
+          <p style="color: red;"><strong id="res-account"></strong></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="btn-account" onclick='updateAccount()'>  Update Account</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 <script type="text/javascript">
+  session_checker();
   getCounter();
   function getCounter(){
     $.post("../ajax/controller_get_teller.php",{
@@ -143,7 +283,7 @@
     var username = $("#username").val();
     var password = $("#password").val();
 
-    if (teller_name == '') {
+    if(teller_name == ''){
       $("#res").html('<span class="fa fa-exclamation-circle"></span> Please input Teller Name');
       $("#teller_name").focus();
     }else if (username == ''){
@@ -178,6 +318,58 @@
       });
     }
   }
+  function getAdmin(){
+    $.post("../ajax/controller_get_admin.php",{
+    },function(data,status){
+      $("#admin-content").html(data);
+    });
+  }
+  function newAdminModal(){
+    $("#admin_name").val('');
+    $("#admin_username").val('');
+    $("#admin_password").val('');
+    $("#admin_modal").modal('show');
+  }
+  function newAdmin(){
+    var admin_name = $("#admin_name").val();
+    var username = $("#admin_username").val();
+    var password = $("#admin_password").val();
+
+    if(admin_name == ''){
+      $("#res-admin").html('<span class="fa fa-exclamation-circle"></span> Please input Admin Name');
+      $("#admin_name").focus();
+    }else if (username == ''){
+      $("#admin_username").focus();
+      $("#res-admin").html('<span class="fa fa-exclamation-circle"></span> Please input Username');
+    }else if (password == ''){
+      $("#admin_password").focus();
+      $("#res-admin").html('<span class="fa fa-exclamation-circle"></span> Please input Password');
+    }else{
+      $("#btn-add-admin").prop('disabled',true);
+      $("#btn-add-admin").html("<span class='fa fa-spin fa-spinner'></span> Loading");
+      $.post("../ajax/controller_add_admin.php",{
+        admin_name:admin_name,
+        username:username,
+        password:password
+      },function(data,status){
+        getAdmin();
+        if(data == -1){
+          $("#res-admin").html('<span class="fa fa-exclamation-circle"></span> Admin Name already exists');
+          $("#admin_name").focus();
+        }else if(data == -2){
+          $("#res-admin").html('<span class="fa fa-exclamation-circle"></span> Username already exists');
+          $("#admin_username").focus();
+        }else if(data == 1){
+          $("#admin_modal").modal('hide');
+        }else{
+          $("#admin_modal").modal('hide');
+          alert("error 500");
+        }
+        $("#btn-add-admin").prop('disabled',false);
+        $("#btn-add-admin").html(" Add Counter");
+      });
+    }
+  }
   function deleteTeller(teller_id){
     var is_confirm = confirm("Are you sure to delete this counter?");
     if(is_confirm == true){
@@ -206,6 +398,86 @@
         }
       });
     });
+  }
+
+  $('#login-page').submit(function(e){
+    $("#btn_login").prop("disabled",true);
+    $("#btn_login").html("<span class='fa fa-spin fa-spinner'></span> Loading...");
+
+    e.preventDefault();
+    $.ajax({
+      type:"POST",
+      url:"../ajax/controller_login.php",
+      data:$('#login-page').serialize(),
+      success:function(data){
+        if(data == 1){
+          location.reload();
+        }else{
+          $("#response").html("<i class='glyphicon glyphicon-info-sign'></i> Oops Incorrect username or password!");
+        }
+        $("#btn_login").prop("disabled",false);
+        $("#btn_login").html("<i class='glyphicon glyphicon-share'></i> LOGIN");
+      }
+    });
+  });
+  function logOut(is_ = 0){
+    var conf = (is_ == 1)?true:confirm("Are you sure to logout?");
+    if(conf == true){
+      $.post("../ajax/teller_logout.php",{
+      },function(data,status){
+        location.reload();
+      });
+    }
+  }
+
+  function account_modal(){
+    // $("#acc-username").val('');
+    $("#curr-password").val('');
+    $("#account_modal").modal('show');
+  }
+  function updateAccount(){
+    var admin_name = $("#acc-name").val();
+    var username = $("#acc-username").val();
+    var curr_pass = $("#curr-password").val();
+    var password = $("#acc-password").val();
+    var password_repeat = $("#password-repeat").val();
+
+    if(admin_name == ''){
+      $("#res-account").html("Please input your name");
+    }else if(username == ''){
+      $("#res-account").html("Please input username");
+    }else if(curr_pass != ltseale_rps){
+      $("#res-account").html("Current Password is incorrect");
+    }else if(password == ''){
+      $("#res-account").html("New Password is required");
+    }else if(password != password_repeat){
+      $("#res-account").html("New Password does not match");
+    }else{
+      $.post("../ajax/controller_update_account.php",{
+        admin_name:admin_name,
+        password:password,
+        username:username
+      },function(data,status){
+        if(data == 2){
+          $("#res-account").html("Account username already exist!");
+        }else if(data == 1){
+          alert("Account successfully updated!\nYou have to login again for security");
+          logOut(1);
+        }else{
+          alert("Error occur!");
+        }
+      });
+    }
+  }
+  function deleteAdmin(admin_id,name){
+    var del_ = confirm("Are you sure to remove admin :: "+name);
+    if(del_ == true){
+      $.post("../ajax/controller_delete_admin.php",{
+        admin_id:admin_id
+      },function(data,status){
+        getAdmin();
+      });
+    }
   }
 </script>
 </html>
