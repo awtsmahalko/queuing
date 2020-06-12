@@ -164,6 +164,8 @@ var ltseale_rps = "<?=$_SESSION['que']['password']?>";
       success:function(data){
         if(data == 1){
           location.reload();
+        }else if(data == -1){
+          $("#response").html("<i class='glyphicon glyphicon-info-sign'></i> Oops your account was deactivated!");
         }else{
           $("#response").html("<i class='glyphicon glyphicon-info-sign'></i> Oops Incorrect username or password!");
         }

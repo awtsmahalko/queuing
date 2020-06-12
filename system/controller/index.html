@@ -457,6 +457,23 @@
       });
     }
   }
+  function setTellerStat(teller_id,stat){
+    var label_ = stat == 1 ? "activate" : "deactivate";
+    var is_confirm = confirm("Are you sure to "+label_+" this counter?");
+    if(is_confirm == true){
+      $.post("../ajax/controller_set_teller_status.php",{
+        teller_id:teller_id,
+        stat:stat
+      },function(data,status){
+        getCounter();
+        if(data == 1){
+          alert("Teller succesfully "+label_);
+        }else{
+          alert("Sorry, error occur");
+        }
+      });
+    }
+  }
   function getReportAnnual(){
     var year = $("#year-by").val();
     var text_ = $("#counter-by option:selected").text();
