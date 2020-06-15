@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>MULTI TRANSACTION QUEUING</title>
+  <title>MULTI - TRANSACTION QUEUING SYSTEM</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
@@ -56,7 +56,7 @@
 </head>
 <body onload='startTime()'>
   <div class="well text-center" style='background-color:#049408;color:#fff;'>
-    <h3 style="margin: auto;">MULTI TRANSACTION QUEUING SYSTEM</h3>
+    <h3 style="margin: auto;">MULTI - TRANSACTION QUEUING SYSTEM</h3>
     <h4 style="margin: auto;"><span id="date-txt"></span> <span id="time-txt"></span></h4>
   </div>
   <div id='main' class="container" style="margin: auto;width:80%;display: none;">
@@ -68,7 +68,7 @@
     <hr>
     <ul class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#home" onclick="getCounter()">COUNTER</a></li>
-        <li><a data-toggle="tab" href="#menu1" onclick="getLine()">REPORT</a></li>
+        <li><a data-toggle="tab" href="#menu1">REPORT</a></li>
         <li><a data-toggle="tab" href="#menu2" onclick="getAdmin()">ADMINISTRATOR</a></li>
     </ul>
 
@@ -94,9 +94,30 @@
         </table>
         </div>
         <div id="menu1" class="tab-pane fade">
-          <h3>Annual Report of Customers (2020)</h3>
-          <div class="col-md-10">
-            <canvas id="lineChart"></canvas>
+          <div class="row" style="margin-top:10px;">
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-addon">Counter</span>
+                <select class="form-control" id="counter-by">
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-addon">Report By</span>
+                <select class="form-control" id="report-by" onchange="reportBy()">
+                  <option value="">&mdash; Please Select &mdash;</option>
+                  <option value='1'>Daily</option>
+                  <option value='2'>Monthly</option>
+                  <option value='3'>Anual</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row" id="report-by-content" style="margin-top:10px;">
+          </div>
+          <hr style="border: 1px solid gray;">
+          <div class="row" id="report-final">
           </div>
         </div>
         <div id="menu2" class="tab-pane">
@@ -248,12 +269,63 @@
   </div>
 </body>
 <script type="text/javascript">
+  var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   session_checker();
   getCounter();
   function getCounter(){
     $.post("../ajax/controller_get_teller.php",{
     },function(data,status){
       $("#teller-content").html(data);
+      getCounterOption();
+    });
+  }
+  function reportBy(){
+    var report = $("#report-by").val();
+    $("#report-final").html('');
+    if(report == 1){
+      $("#report-by-content").html('<div class="col-md-6">'+
+        '<div class="input-group">'+
+          '<span class="input-group-addon">Choose Date</span>'+
+          '<input type="date" class="form-control" id="date-by">'+
+        '</div>'+
+      '</div>'+
+      '<div class="col-md-6">'+
+        '<button class="btn btn-primary" onclick="getReportDaily()"> Generate Daily Report</button>'+
+      '</div>');
+    }else if(report == 2){
+      $("#report-by-content").html('<div class="col-md-6">'+
+        '<div class="input-group">'+
+          '<span class="input-group-addon">Choose Month</span>'+
+          '<input type="month" class="form-control" id="month-by">'+
+        '</div>'+
+      '</div>'+
+      '<div class="col-md-6">'+
+        '<button class="btn btn-primary" onclick="getReportMonthly()"> Generate Monthly Report</button>'+
+      '</div>');
+    }else if(report == 3){
+      $("#report-by-content").html('<div class="col-md-6">'+
+        '<div class="input-group">'+
+          '<span class="input-group-addon">Choose Year</span>'+
+          '<select class="form-control" id="year-by">'+
+            '<option value="2020">2020</option>'+
+            '<option value="2019">2019</option>'+
+            '<option value="2018">2018</option>'+
+            '<option value="2017">2017</option>'+
+            '<option value="2016">2016</option>'+
+          '</select>'+
+        '</div>'+
+      '</div>'+
+      '<div class="col-md-6">'+
+        '<button class="btn btn-primary" onclick="getReportAnnual()"> Generate Annual Report</button>'+
+      '</div>');
+    }else{
+      $("#report-by-content").html('<h4 style="color:red;" class="text-center"><span class="fa fa-exclamation-circle"></span> Please Select Report By</h4>');
+    }
+  }
+  function getCounterOption(){
+    $.post("../ajax/controller_get_teller_options.php",{
+    },function(data,status){
+      $("#counter-by").html(data);
     });
   }
   function changeTeller(teller_id,ele){
@@ -385,14 +457,114 @@
       });
     }
   }
+  function setTellerStat(teller_id,stat){
+    var label_ = stat == 1 ? "activate" : "deactivate";
+    var is_confirm = confirm("Are you sure to "+label_+" this counter?");
+    if(is_confirm == true){
+      $.post("../ajax/controller_set_teller_status.php",{
+        teller_id:teller_id,
+        stat:stat
+      },function(data,status){
+        getCounter();
+        if(data == 1){
+          alert("Teller succesfully "+label_);
+        }else{
+          alert("Sorry, error occur");
+        }
+      });
+    }
+  }
+  function getReportAnnual(){
+    var year = $("#year-by").val();
+    var text_ = $("#counter-by option:selected").text();
+    $("#report-final").html('<h3>Annual Report of Customers ('+year+')</h3>'+
+    '<h4>By '+text_+'</h4>'+
+    '<div class="col-md-10">'+
+      '<canvas id="lineChart"></canvas>'+
+    '</div>');
+    getLine();
+  }
+  function getReportMonthly(){
+    var d_ = $("#month-by").val();
+    if(d_ == ''){
 
+    }else{
+      var d = new Date(d_+'-01');
+      var text_ = $("#counter-by option:selected").text();
+      $("#report-final").html('<h3>Monthly Report of Customers ('+months[d.getMonth()]+' '+d.getFullYear()+')</h3>'+
+      '<h4>By '+text_+'</h4>'+
+      '<div class="col-md-10">'+
+        '<canvas id="lineChart"></canvas>'+
+      '</div>');
+      getLineMonthly();
+    }
+  }
+  function getReportDaily(){
+    var d = new Date($("#date-by").val());
+    var text_ = $("#counter-by option:selected").text();
+    $("#report-final").html('<h3>Daily Report of Customers ('+months[d.getMonth()]+', '+d.getDate() +' '+d.getFullYear()+')</h3>'+
+      '<h4>By '+text_+'</h4>'+
+      '<div class="col-md-10">'+
+        '<canvas id="lineChart"></canvas>'+
+      '</div>'); 
+      getLineDaily();
+  }
   function getLine(){
+    var year = $("#year-by").val();
+    var counter = $("#counter-by").val();
     $.getJSON("../ajax/controller_get_report.php",{
+      year:year,
+      counter:counter
     },function(data,status){
       var ctxL = document.getElementById("lineChart").getContext('2d');
       var myLineChart = new Chart(ctxL, {
         type: 'line',
         data: data,
+        options: {
+        responsive: true
+        }
+      });
+    });
+  }
+  function getLineMonthly(){
+    var month = $("#month-by").val();
+    var counter = $("#counter-by").val();
+    $.getJSON("../ajax/controller_get_report_monthly.php",{
+      month:month,
+      counter:counter
+    },function(data,status){
+      var ctxL = document.getElementById("lineChart").getContext('2d');
+      var myLineChart = new Chart(ctxL, {
+        type: 'line',
+        data: data,
+        options: {
+        responsive: true
+        }
+      });
+    });
+  }
+
+  function getLineDaily(){
+    var date = $("#date-by").val();
+    var counter = $("#counter-by").val();
+    $.getJSON("../ajax/controller_get_report_daily.php",{
+      date:date,
+      counter:counter
+    },function(data,status){
+      console.log(data);
+      var ctxL = document.getElementById("lineChart").getContext('2d');
+      var myLineChart = new Chart(ctxL, {
+        type: 'pie',
+        data: {
+          datasets : [{
+            data: data,
+            backgroundColor: [
+              'rgb(54, 162, 235)',
+              'rgb(255, 99, 132)'
+            ],
+          }],
+          labels : ['Regular','PWD / SENIOR CITIZEN / PREGNANT']
+        },
         options: {
         responsive: true
         }

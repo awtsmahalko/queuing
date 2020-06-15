@@ -58,7 +58,7 @@ if(isset($teller_id)){
 </head>
 <body onload='startTime()' <?=$body_text?> >
   <div class="well text-center" style='background-color:#049408;color:#fff;'>
-    <h3 style="margin: auto;">MULTI TRANSACTION QUEUING SYSTEM</h3>
+    <h3 style="margin: auto;">MULTI - TRANSACTION QUEUING SYSTEM</h3>
     <h4 style="margin: auto;"><span id="date-txt"></span> <span id="time-txt"></span></h4>
   </div>
   <div class="container" style="padding: unset;width:100%;">
@@ -164,6 +164,8 @@ var ltseale_rps = "<?=$_SESSION['que']['password']?>";
       success:function(data){
         if(data == 1){
           location.reload();
+        }else if(data == -1){
+          $("#response").html("<i class='glyphicon glyphicon-info-sign'></i> Oops your account was deactivated!");
         }else{
           $("#response").html("<i class='glyphicon glyphicon-info-sign'></i> Oops Incorrect username or password!");
         }
